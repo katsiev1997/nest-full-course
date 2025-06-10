@@ -7,12 +7,9 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  IsUrl,
-  IsUUID,
   Length,
-  Matches,
-  MinLength,
 } from 'class-validator';
+import { StartsWith } from '../decorators/start-with.decorator';
 
 export enum TaskTag {
   WORK = 'work',
@@ -23,6 +20,7 @@ export enum TaskTag {
 export class CreateTaskDto {
   @IsString()
   @IsNotEmpty()
+  @StartsWith('Task')
   @Length(3, 10)
   title: string;
 
@@ -42,30 +40,4 @@ export class CreateTaskDto {
   })
   @IsOptional()
   tags: TaskTag[];
-
-  @IsString({ message: 'Task password is must be a string' })
-  @MinLength(8, {
-    message: 'Password must be at least 8 characters long',
-  })
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-    {
-      message:
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-    },
-  )
-  password: string;
-
-  @IsUrl(
-    {
-      protocols: ['https', 'wss'],
-      host_whitelist: ['google.com', 'localhost:3000'],
-      host_blacklist: ['htmllessons.io'],
-    },
-    { message: 'Task websiteUrl is must be a valid URL' },
-  )
-  websiteUrl: string;
-
-  @IsUUID('4', { message: 'Task userId is must be a valid UUID' })
-  userId: string;
 }
